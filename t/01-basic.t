@@ -8,7 +8,7 @@ try {
 
     package Kat;
     use Moose;
-    use MooseX::Aspertame;
+    use MooseX::Aspartame;
     use namespace::autoclean;
 
     has Int 'age', is => 'rw';
@@ -27,18 +27,21 @@ my $krazy;
 }
 
 try {
-    use Moose::Util::TypeConstraints;
-    subtype Weapon => as 'Object';
+
+    BEGIN {
+        use Moose::Util::TypeConstraints;
+        subtype 'Weapon' => as 'Object';
+    }
 
     package Mouse;
     use Moose;
-    use MooseX::Aspertame;
+    use MooseX::Aspartame;
     use namespace::autoclean;
 
     has Int 'age', is => 'rw';
     has Str 'name', is => 'ro', default => 'Ignatz';
 
-    #    has Weapon 'weapon', is => 'ro';
+    has Weapon 'weapon', is => 'ro';
     has Kat 'target', is => 'ro', default => sub { $krazy };
 
     package Brick;
@@ -54,13 +57,6 @@ catch {
       'got a new object';
     is( $igntz->age,  6,        'Ignatz right age' );
     is( $igntz->name, 'Ignatz', 'Ignatz right name' );
-
-  TODO: {
-        $TODO =
-          "need to figure out how to hook into the TypeConstraint system to
-add new types and exports dynamically";
-
-        #    isa_ok( $igntz->weapon, 'Brick' );
-    }
+    isa_ok( $igntz->weapon, 'Brick' );
 }
 done_testing;
